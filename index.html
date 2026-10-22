@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LonxsLocate · Redes satelitales para la RD rural</title>
+  <meta name="description" content="Diseño y simulación 3D de constelaciones LEO/GEO para llevar conectividad a las zonas rurales de República Dominicana.">
+  <meta name="theme-color" content="#0c0a0e">
+  <meta property="og:title" content="LonxsLocate">
+  <meta property="og:description" content="Simulador 3D de constelaciones satelitales para conectar la República Dominicana rural.">
+  <meta property="og:image" content="img/estaciones-rd.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='14' fill='%23e5352b'/%3E%3Cellipse cx='32' cy='32' rx='29' ry='11' fill='none' stroke='%23ffb4a8' stroke-width='4' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="progreso" aria-hidden="true"><i id="barra-progreso"></i></div>
+
+  <header class="nav">
+    <a class="marca" href="#inicio" aria-label="LonxsLocate, inicio">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="13" fill="currentColor"/><ellipse cx="32" cy="32" rx="29" ry="11" fill="none" stroke="currentColor" stroke-width="4" opacity=".55" transform="rotate(-25 32 32)"/></svg>
+      LonxsLocate
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#historia">Historia</a>
+      <a href="#resultados">Resultados</a>
+      <a href="#enlace">Enlace</a>
+      <a href="#videos">Videos</a>
+      <a href="#aws">AWS</a>
+      <a href="#aporte">Aporte</a>
+    </nav>
+    <a class="btn btn-sm btn-fantasma" href="https://github.com/Lonxs69/LonxsLocate" target="_blank" rel="noopener"><i data-lucide="github"></i>GitHub</a>
+  </header>
+
+  <div class="escenario" id="escenario" aria-hidden="true">
+    <canvas id="canvas-principal"></canvas>
+    <div class="etiquetas" id="etiquetas"></div>
+    <div class="historia-hud" id="historia-hud">
+      <div><span>Satélites</span><b id="h-total" class="mono">200</b></div>
+      <div><span>Cobertura de la peor estación</span><b id="h-cob" class="mono">–</b></div>
+      <div><span>Hueco más largo</span><b id="h-hueco" class="mono">–</b></div>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO: el scroll acerca la cámara a República Dominicana -->
+    <section class="hero" id="inicio">
+      <div class="hero-fijo">
+        <div class="hero-velo" id="hero-velo" aria-hidden="true"></div>
+        <div class="contenedor hero-contenido" id="hero-contenido">
+          <p class="eyebrow" data-intro><i data-lucide="satellite"></i>Redes satelitales LEO / GEO · República Dominicana</p>
+          <h1 data-intro>Internet para cada comunidad, <span>desde la órbita.</span></h1>
+          <p class="lead" data-intro>LonxsLocate diseña y simula constelaciones de satélites para conectar las zonas rurales del país: la frontera, Bahoruco, Monte Plata y las montañas de Constanza.</p>
+          <div class="acciones" data-intro>
+            <a class="btn" href="#historia"><i data-lucide="orbit"></i>Ver cómo funciona</a>
+            <a class="btn btn-fantasma" href="https://github.com/Lonxs69/LonxsLocate" target="_blank" rel="noopener"><i data-lucide="github"></i>Código</a>
+          </div>
+          <dl class="kpis" data-intro>
+            <div><dt><i data-lucide="radio-tower"></i>Estaciones terrenas</dt><dd><span data-contar="15">15</span></dd></div>
+            <div><dt><i data-lucide="satellite"></i>Satélites mínimos</dt><dd><span data-contar="64">64</span></dd></div>
+            <div><dt><i data-lucide="timer"></i>Latencia LEO vs. GEO</dt><dd><span data-contar="4">4</span> ms <small>vs. 241 ms</small></dd></div>
+          </dl>
+        </div>
+        <p class="pista-giro" id="pista-giro"><i data-lucide="move-3d"></i>Arrastra el globo para girarlo</p>
+        <div class="rd-titulo" id="rd-titulo">
+          <p class="eyebrow"><i data-lucide="map-pin"></i>18.7° N · 70.2° O</p>
+          <h2>República Dominicana</h2>
+          <p>8 estaciones de subida en las ciudades · 7 comunidades rurales por conectar</p>
+        </div>
+        <div class="indicador-scroll" id="indicador-scroll"><span>Desliza</span><i></i></div>
+      </div>
+    </section>
+
+    <!-- HISTORIA (scroll) -->
+    <section class="historia" id="historia">
+      <div class="contenedor historia-grid">
+        <div class="historia-hueco" aria-hidden="true"></div>
+        <div class="historia-pasos">
+          <header class="titulo-seccion izquierda">
+            <p class="eyebrow"><i data-lucide="layers"></i>El problema, paso a paso</p>
+            <h2>Cómo llegamos a 64 satélites</h2>
+          </header>
+          <article class="paso" data-paso="uno">
+            <span class="paso-num">01</span>
+            <h3>Un satélite solo pasa unos minutos</h3>
+            <p>A 629 km de altura, un satélite da la vuelta a la Tierra en 97 minutos. Sobre la isla está apenas un rato, y el resto del día cada comunidad se queda sin señal.</p>
+          </article>
+          <article class="paso" data-paso="fragil">
+            <span class="paso-num">02</span>
+            <h3>Diez satélites en fase dejan huecos</h3>
+            <p>Si todas las órbitas arrancan al mismo tiempo, los satélites pasan juntos y luego desaparecen juntos. Hay huecos de hasta hora y media sin servicio.</p>
+          </article>
+          <article class="paso" data-paso="inicial">
+            <span class="paso-num">03</span>
+            <h3>El diseño inicial: 200 satélites</h3>
+            <p>Veinte planos con diez satélites cada uno y un desfase entre planos. Siempre hay dos o tres a la vista, pero es una constelación cara.</p>
+          </article>
+          <article class="paso" data-paso="optimo">
+            <span class="paso-num">04</span>
+            <h3>El óptimo: 64 satélites a 1 200 km</h3>
+            <p>Subiendo la órbita, cada satélite cubre más terreno. El barrido de 90 diseños encontró que 8 planos de 8 satélites mantienen las 15 estaciones con servicio todo el día.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTADOS -->
+    <section class="seccion alterna" id="resultados">
+      <div class="contenedor">
+        <header class="titulo-seccion" data-revelar>
+          <p class="eyebrow"><i data-lucide="chart-scatter"></i>Barrido de 90 diseños</p>
+          <h2>¿Cuántos satélites hacen falta de verdad?</h2>
+          <p>Probamos de 6 a 20 planos, de 4 a 12 satélites por plano y 3 altitudes, simulando 24 horas cada diseño. Nos quedamos con el más pequeño que mantiene a las 15 estaciones con servicio todo el tiempo.</p>
+        </header>
+
+        <div class="tarjetas-altitud" id="tarjetas-altitud" data-revelar-hijos></div>
+
+        <figure class="grafico" data-revelar>
+          <figcaption>
+            <h3>Cobertura de la peor estación según el tamaño de la constelación</h3>
+            <div class="leyenda" id="leyenda-barrido"></div>
+          </figcaption>
+          <div class="grafico-lienzo" id="grafico-barrido"></div>
+          <details class="tabla-datos">
+            <summary><i data-lucide="table"></i>Ver los 90 diseños en tabla</summary>
+            <div class="tabla-scroll"><table id="tabla-barrido"></table></div>
+          </details>
+        </figure>
+
+        <p class="nota" data-revelar>El modelo mide <b>visibilidad continua</b> (al menos un satélite sobre 10° de elevación), no capacidad. Menos satélites también significa menos ancho de banda para repartir, y subir a 1 200 km agrega ~2 ms de latencia y ~5.6 dB de pérdida de trayecto. El siguiente paso del proyecto es el presupuesto de enlace completo.</p>
+      </div>
+    </section>
+
+    <!-- ENLACE -->
+    <section class="seccion" id="enlace">
+      <div class="contenedor">
+        <header class="titulo-seccion" data-revelar>
+          <p class="eyebrow"><i data-lucide="calculator"></i>Calculadora de enlace</p>
+          <h2>De una estación al satélite y de vuelta a tierra</h2>
+          <p>Elige dónde sube la señal y dónde baja. El satélite se coloca sobre el punto medio entre las dos.</p>
+        </header>
+
+        <div class="calc" data-revelar>
+          <form class="calc-form" id="calc-form">
+            <label class="control"><span><i data-lucide="radio-tower"></i>Sube en</span><select id="c-origen"></select></label>
+            <label class="control"><span><i data-lucide="map-pin"></i>Baja en</span><select id="c-destino"></select></label>
+            <label class="control">
+              <span>Altitud del satélite <b id="v-c-alt" class="mono"></b></span>
+              <input id="c-alt" type="range" min="400" max="2000" step="10" value="600">
+            </label>
+            <label class="control">
+              <span><i data-lucide="signal"></i>Banda</span>
+              <select id="c-banda">
+                <option value="1600">L · 1.6 GHz</option>
+                <option value="2200">S · 2.2 GHz</option>
+                <option value="4000">C · 4 GHz</option>
+                <option value="12000" selected>Ku · 12 GHz</option>
+                <option value="20000">Ka · 20 GHz</option>
+              </select>
+            </label>
+          </form>
+
+          <div class="calc-salida">
+            <div class="tramos" id="c-tramos"></div>
+            <div class="comparacion">
+              <h3>Latencia extremo a extremo</h3>
+              <div class="comp-fila"><span>LEO</span><div class="comp-barra"><i id="c-bar-leo"></i></div><b id="c-lat-leo" class="mono"></b></div>
+              <div class="comp-fila"><span>GEO</span><div class="comp-barra"><i id="c-bar-geo" class="geo"></i></div><b id="c-lat-geo" class="mono"></b></div>
+              <p id="c-veces" class="nota"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEOS -->
+    <section class="seccion alterna" id="videos">
+      <div class="contenedor">
+        <header class="titulo-seccion" data-revelar>
+          <p class="eyebrow"><i data-lucide="video"></i>Universe Sandbox</p>
+          <h2>Así se ven las órbitas</h2>
+          <p>Las primeras pruebas del modelo orbital: satélites GEO y LEO alrededor de la Tierra y luego dentro del sistema solar.</p>
+        </header>
+        <div class="videos" data-revelar-hijos>
+          <figure class="video">
+            <video controls preload="metadata" playsinline poster="media/RedSatelitalTierra.jpg">
+              <source src="media/RedSatelitalTierra.mp4" type="video/mp4">
+            </video>
+            <figcaption><b>Red satelital alrededor de la Tierra</b><span>Órbitas LEO y GEO, sin rotación terrestre · 36 s</span></figcaption>
+          </figure>
+          <figure class="video">
+            <video controls preload="metadata" playsinline poster="media/RedSatelitalSistemaSolar.jpg">
+              <source src="media/RedSatelitalSistemaSolar.mp4" type="video/mp4">
+            </video>
+            <figcaption><b>La red dentro del sistema solar</b><span>Con la Tierra girando y orbitando el Sol · 50 s</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- RED -->
+    <section class="seccion" id="red">
+      <div class="contenedor">
+        <header class="titulo-seccion" data-revelar>
+          <p class="eyebrow"><i data-lucide="network"></i>Del satélite al usuario</p>
+          <h2>La última milla</h2>
+          <p>La estación base en Barahona sube la señal al satélite LEO. En Pedernales baja a una central que la reparte por antenas 3G/4G a Pedernales, Oviedo y Juancho.</p>
+        </header>
+        <figure class="figura" data-imagen>
+          <img src="img/red-acceso-pedernales.png" alt="Topología: estación base Barahona, satélite LEO, downlink Pedernales y tres comunidades" loading="lazy" width="1400" height="540">
+        </figure>
+        <div class="figuras-dos">
+          <figure class="figura" data-imagen>
+            <img src="img/estaciones-rd.png" alt="Mapa de República Dominicana con las 15 estaciones y la traza de dos satélites" loading="lazy" width="880" height="416">
+            <figcaption>Las 15 estaciones y la traza de dos satélites de la constelación.</figcaption>
+          </figure>
+          <figure class="figura" data-imagen>
+            <img src="img/enlace-santo-domingo-pedernales.png" alt="Gráfico del enlace Santo Domingo, satélite y Pedernales" loading="lazy" width="700" height="525">
+            <figcaption>Enlace Santo Domingo → LEO → Pedernales (vista superior).</figcaption>
+          </figure>
+        </div>
+        <div class="descargas" data-revelar>
+          <a class="btn btn-fantasma" href="descargas/SimulacionCisco.pkt" download><i data-lucide="download"></i>Simulación de Cisco Packet Tracer</a>
+          <a class="btn btn-fantasma" href="https://github.com/Lonxs69/LonxsLocate/tree/main/matlab" target="_blank" rel="noopener"><i data-lucide="file-code-2"></i>Scripts de MATLAB</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- AWS -->
+    <section class="seccion alterna" id="aws">
+      <div class="contenedor">
+        <header class="titulo-seccion" data-revelar>
+          <p class="eyebrow"><i data-lucide="cpu"></i>Nube</p>
+          <h2>Qué hace AWS en el proyecto</h2>
+          <p>Probar más diseños hace crecer las combinaciones muy rápido. Como cada diseño se evalúa por separado, AWS los corre todos a la vez y deja los resultados listos para consultar con SQL.</p>
+        </header>
+
+        <div class="flujo-marco">
+          <div class="flujo-linea" aria-hidden="true"><i id="flujo-avance"></i></div>
+          <ol class="flujo" aria-label="Flujo del barrido en AWS">
+            <li><span class="flujo-icono"><i data-lucide="terminal"></i></span><b>CLI</b><span><code>barrido --aws</code> envía la lista de diseños</span></li>
+            <li><span class="flujo-icono"><i data-lucide="workflow"></i></span><b>Step Functions</b><span>Los reparte, hasta 100 a la vez, y reintenta si algo falla</span></li>
+            <li><span class="flujo-icono"><i data-lucide="zap"></i></span><b>Lambda</b><span>Cada una simula un diseño con el mismo motor en Python</span></li>
+            <li><span class="flujo-icono"><i data-lucide="database"></i></span><b>S3</b><span>Guarda cada resultado, particionado por barrido</span></li>
+            <li><span class="flujo-icono"><i data-lucide="table"></i></span><b>Athena</b><span>Ordena con SQL y devuelve los mejores diseños</span></li>
+          </ol>
+        </div>
+
+        <div class="tarjetas-aws" data-revelar-hijos>
+          <article><i data-lucide="file-code-2"></i><h3>Infraestructura como código</h3><p>Todo está en Terraform: bucket, Lambda, Step Functions, Glue, Athena y permisos. El CI valida el Terraform en cada cambio.</p></article>
+          <article><i data-lucide="key-round"></i><h3>Sin llaves en el repo</h3><p>GitHub Actions entra a AWS por OIDC con un rol de mínimo privilegio, limitado a la rama principal.</p></article>
+          <article><i data-lucide="shield-check"></i><h3>Costo controlado</h3><p>Bucket privado y cifrado, limpieza automática de resultados viejos y un tope de 1 GB por consulta en Athena.</p></article>
+          <article><i data-lucide="mountain"></i><h3>Datos abiertos</h3><p>El relieve del mapa de estaciones viene de Terrain Tiles, el dataset abierto de elevación de AWS.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- APORTE -->
+    <section class="seccion alterna aporte" id="aporte">
+      <div class="contenedor">
+        <div class="aporte-cabecera" data-revelar>
+          <div>
+            <p class="eyebrow"><i data-lucide="route"></i>El aporte</p>
+            <h2>Qué aporto a lo que ya existe</h2>
+          </div>
+          <div>
+            <p>Starlink ya ofrece internet satelital en República Dominicana desde 2022 y también en Puerto Rico. Eso resuelve el acceso de quien puede pagar una antena para su casa. LonxsLocate trabaja otra parte del problema: decidir, con datos, cómo se conecta una comunidad completa.</p>
+            <p class="aporte-nota">Estudio independiente de diseño y simulación, sin afiliación con SpaceX ni Starlink.</p>
+          </div>
+        </div>
+        <div class="aporte-grid" data-revelar-hijos>
+          <article>
+            <span class="aporte-icono"><i data-lucide="users"></i></span>
+            <h3>Una antena por comunidad, no por casa</h3>
+            <p>La propuesta usa estaciones terrenas compartidas que reparten la señal por 3G/4G, como en la red de Pedernales, Oviedo y Juancho. El equipo se paga una vez y lo aprovechan muchas familias.</p>
+          </article>
+          <article>
+            <span class="aporte-icono"><i data-lucide="map-pin"></i></span>
+            <h3>Primero donde no llega nada</h3>
+            <p>Las 7 estaciones de bajada están en la frontera, Bahoruco, Monte Plata y Constanza. El análisis mide cada comunidad por separado y siempre mira a la peor, no al promedio.</p>
+          </article>
+          <article>
+            <span class="aporte-icono"><i data-lucide="scale"></i></span>
+            <h3>Medir antes de invertir</h3>
+            <p>Comparar 90 constelaciones mostró que 64 satélites bastan donde el diseño inicial pedía 200. Cada cifra de esta página sale del mismo código y se puede reproducir.</p>
+          </article>
+          <article>
+            <span class="aporte-icono"><i data-lucide="folder-open"></i></span>
+            <h3>Abierto para quien decide</h3>
+            <p>Un proveedor local, una universidad o una institución pública puede cargar sus propias estaciones en un CSV y evaluar opciones sin depender de un solo proveedor.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÓDIGO ABIERTO -->
+    <section class="cierre" id="codigo">
+      <div class="contenedor cierre-grid">
+        <div class="cierre-texto" data-revelar>
+          <p class="eyebrow"><i data-lucide="code-xml"></i>Código abierto</p>
+          <h2>Todo el proyecto, <span>en un solo repositorio.</span></h2>
+          <p>El motor orbital en Python sin dependencias, los scripts de MATLAB, la red de Cisco Packet Tracer, la infraestructura de AWS en Terraform y este sitio. Cualquiera puede clonarlo y reproducir cada número de esta página.</p>
+          <ul class="pilas" data-revelar-hijos>
+            <li><i data-lucide="file-code-2"></i>Python 3.9+</li>
+            <li><i data-lucide="sigma"></i>MATLAB</li>
+            <li><i data-lucide="box"></i>Three.js</li>
+            <li><i data-lucide="cloud"></i>AWS</li>
+            <li><i data-lucide="layers"></i>Terraform</li>
+            <li><i data-lucide="network"></i>Packet Tracer</li>
+          </ul>
+          <div class="acciones">
+            <a class="btn" href="https://github.com/Lonxs69/LonxsLocate" target="_blank" rel="noopener"><i data-lucide="github"></i>Ver en GitHub<i data-lucide="arrow-up-right"></i></a>
+            <a class="btn btn-fantasma" href="descargas/SimulacionCisco.pkt" download><i data-lucide="download"></i>Descargar .pkt</a>
+          </div>
+        </div>
+        <div class="terminal" data-revelar>
+          <div class="terminal-barra"><i></i><i></i><i></i><span>zsh · LonxsLocate</span></div>
+          <pre id="terminal"><code></code></pre>
+        </div>
+      </div>
+      <div class="contenedor">
+        <dl class="cifras" data-revelar-hijos>
+          <div><dt>Tests automáticos</dt><dd class="mono">20</dd></div>
+          <div><dt>Diseños evaluados</dt><dd class="mono">90</dd></div>
+          <div><dt>Dependencias del motor</dt><dd class="mono">0</dd></div>
+          <div><dt>Licencia</dt><dd class="mono">MIT</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie-grid">
+        <div class="pie-marca">
+          <a class="marca marca-grande" href="#inicio" aria-label="LonxsLocate, volver arriba">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="13" fill="currentColor"/><ellipse cx="32" cy="32" rx="29" ry="11" fill="none" stroke="currentColor" stroke-width="4" opacity=".55" transform="rotate(-25 32 32)"/></svg>
+            <span>Lonxs<b>Locate</b></span>
+          </a>
+          <p>Diseño y simulación de redes satelitales LEO/GEO para conectar la República Dominicana rural.</p>
+        </div>
+        <nav class="pie-col" aria-label="Secciones del sitio">
+          <h4>Proyecto</h4>
+          <a href="#historia">Historia</a>
+          <a href="#resultados">Resultados</a>
+          <a href="#enlace">Calculadora</a>
+          <a href="#videos">Videos</a>
+          <a href="#aws">AWS</a>
+          <a href="#aporte">Aporte</a>
+        </nav>
+        <nav class="pie-col" aria-label="Recursos">
+          <h4>Recursos</h4>
+          <a href="https://github.com/Lonxs69/LonxsLocate#readme" target="_blank" rel="noopener">Documentación</a>
+          <a href="https://github.com/Lonxs69/LonxsLocate/tree/main/matlab" target="_blank" rel="noopener">Scripts de MATLAB</a>
+          <a href="https://github.com/Lonxs69/LonxsLocate/tree/main/aws" target="_blank" rel="noopener">Infraestructura AWS</a>
+          <a href="descargas/SimulacionCisco.pkt" download>Simulación de Cisco</a>
+        </nav>
+        <div class="pie-col">
+          <h4>Autor</h4>
+          <p class="pie-autor"><b>Junior De León</b><span>DevOps</span></p>
+          <a class="pie-social" href="https://github.com/Lonxs69" target="_blank" rel="noopener"><i data-lucide="github"></i>@Lonxs69</a>
+        </div>
+      </div>
+
+      <div class="pie-legal">
+        <p>© 2026 Junior De León · Licencia MIT</p>
+        <p>Fronteras: Natural Earth · Relieve: AWS Terrain Tiles</p>
+        <a href="#inicio" class="arriba"><i data-lucide="arrow-up"></i>Volver arriba</a>
+      </div>
+    </div>
+    <div class="pie-gigante" aria-hidden="true">LonxsLocate</div>
+  </footer>
+
+  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+  <noscript><p class="noscript">Esta página necesita JavaScript para el globo 3D.</p></noscript>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
