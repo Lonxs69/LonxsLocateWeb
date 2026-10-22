@@ -1,0 +1,122 @@
+[
+ {
+  "nombre": "Santo Domingo",
+  "tipo": "uplink",
+  "region": "Distrito Nacional",
+  "lat": 18.4861,
+  "lon": -69.9312,
+  "alt_m": 14.0
+ },
+ {
+  "nombre": "Santiago",
+  "tipo": "uplink",
+  "region": "Santiago",
+  "lat": 19.4517,
+  "lon": -70.697,
+  "alt_m": 178.0
+ },
+ {
+  "nombre": "La Romana",
+  "tipo": "uplink",
+  "region": "La Romana",
+  "lat": 18.4273,
+  "lon": -68.9728,
+  "alt_m": 10.0
+ },
+ {
+  "nombre": "Puerto Plata",
+  "tipo": "uplink",
+  "region": "Puerto Plata",
+  "lat": 19.7934,
+  "lon": -70.6884,
+  "alt_m": 5.0
+ },
+ {
+  "nombre": "San Juan de la Maguana",
+  "tipo": "uplink",
+  "region": "San Juan",
+  "lat": 18.8058,
+  "lon": -71.229,
+  "alt_m": 400.0
+ },
+ {
+  "nombre": "Barahona",
+  "tipo": "uplink",
+  "region": "Barahona",
+  "lat": 18.2085,
+  "lon": -71.1008,
+  "alt_m": 10.0
+ },
+ {
+  "nombre": "Higüey",
+  "tipo": "uplink",
+  "region": "La Altagracia",
+  "lat": 18.615,
+  "lon": -68.7076,
+  "alt_m": 100.0
+ },
+ {
+  "nombre": "San Francisco de Macorís",
+  "tipo": "uplink",
+  "region": "Duarte",
+  "lat": 19.3008,
+  "lon": -70.2526,
+  "alt_m": 90.0
+ },
+ {
+  "nombre": "Pedernales",
+  "tipo": "downlink",
+  "region": "Pedernales",
+  "lat": 18.0384,
+  "lon": -71.744,
+  "alt_m": 20.0
+ },
+ {
+  "nombre": "Comendador",
+  "tipo": "downlink",
+  "region": "Elías Piña",
+  "lat": 18.8767,
+  "lon": -71.7072,
+  "alt_m": 430.0
+ },
+ {
+  "nombre": "Dajabón",
+  "tipo": "downlink",
+  "region": "Dajabón",
+  "lat": 19.5486,
+  "lon": -71.7083,
+  "alt_m": 50.0
+ },
+ {
+  "nombre": "Jimaní",
+  "tipo": "downlink",
+  "region": "Independencia",
+  "lat": 18.4917,
+  "lon": -71.85,
+  "alt_m": 40.0
+ },
+ {
+  "nombre": "Neiba",
+  "tipo": "downlink",
+  "region": "Bahoruco",
+  "lat": 18.481,
+  "lon": -71.4189,
+  "alt_m": 10.0
+ },
+ {
+  "nombre": "Sabana Grande de Boyá",
+  "tipo": "downlink",
+  "region": "Monte Plata",
+  "lat": 18.945,
+  "lon": -69.793,
+  "alt_m": 100.0
+ },
+ {
+  "nombre": "Constanza",
+  "tipo": "downlink",
+  "region": "La Vega",
+  "lat": 18.9095,
+  "lon": -70.7448,
+  "alt_m": 1200.0
+ }
+]

@@ -1,0 +1,22 @@
+{
+ "uno": {
+  "satelites": 1,
+  "cobertura_min_pct": 1.2,
+  "hueco_maximo_min": 711.0
+ },
+ "fragil": {
+  "satelites": 10,
+  "cobertura_min_pct": 14.1,
+  "hueco_maximo_min": 91.0
+ },
+ "inicial": {
+  "satelites": 200,
+  "cobertura_min_pct": 100.0,
+  "hueco_maximo_min": 0.0
+ },
+ "optimo": {
+  "satelites": 64,
+  "cobertura_min_pct": 100.0,
+  "hueco_maximo_min": 0.0
+ }
+}
