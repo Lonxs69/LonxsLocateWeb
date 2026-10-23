@@ -458,4 +458,161 @@ if (!reducido) {
   gsap.from(".pie-grid > *", { y: 30, opacity: 0, stagger: 0.08, duration: 0.8, ease: "power3.out",
     scrollTrigger: { trigger: ".pie-grid", start: "top 90%" } });
 }
+
+// ---------------------------------------------------------------------------
+// Satélite Jr: acompaña todo el recorrido. En cada sección salta al margen
+// contrario con un arco y una vuelta completa; al final aterriza sobre la terminal.
+// ---------------------------------------------------------------------------
+function satelite() {
+  const jr = $("#jr");
+  const incl = jr.querySelector(".jr-incl");
+  const giro = jr.querySelector(".jr-giro");
+  const irX = gsap.quickTo(jr, "x", { duration: 0.8, ease: "power3" });
+  const irY = gsap.quickTo(jr, "y", { duration: 0.8, ease: "power3" });
+  const inclinar = gsap.quickTo(incl, "rotation", { duration: 0.6, ease: "power3" });
+  const opacidad = gsap.quickTo(jr, "opacity", { duration: 0.5, ease: "power2" });
+  const inicio = performance.now();
+  const terminal = $(".terminal");
+  let lado = "der", arco = { p: 1 }, aterrizado = false, vueltas = 0;
+
+  const xLado = (l) => {
+    const w = jr.offsetWidth;
+    if (window.innerWidth < 900) return window.innerWidth - w - 14;
+    const margen = (window.innerWidth - Math.min(window.innerWidth - 32, 1200)) / 2;
+    const x = margen >= w + 16 ? margen / 2 - w / 2 : 8;
+    return l === "izq" ? x : window.innerWidth - x - w;
+  };
+  const cambiarLado = (nuevo) => {
+    if (nuevo === lado || window.innerWidth < 900) return;
+    lado = nuevo;
+    vueltas += 1;
+    gsap.fromTo(arco, { p: 0 }, { p: 1, duration: 1.15, ease: "power2.inOut" });
+    gsap.to(giro, { rotation: 360 * vueltas, duration: 1.15, ease: "power2.inOut" });
+    gsap.fromTo(giro, { scale: 1 }, { scale: 1.25, duration: 0.575, yoyo: true, repeat: 1, ease: "sine.inOut" });
+  };
+
+  // Lado que ocupa en cada tramo de la página
+  const tramos = [
+    ["#historia", "der"], ["#resultados", "izq"], ["#enlace", "der"], ["#videos", "izq"],
+    ["#red", "der"], ["#aws", "izq"], ["#aporte", "der"],
+  ];
+  tramos.forEach(([sel, l]) => ScrollTrigger.create({
+    trigger: sel, start: "top 55%", end: "bottom 55%",
+    onToggle: (st) => { if (st.isActive) cambiarLado(l); },
+  }));
+  ScrollTrigger.create({
+    trigger: ".hero", start: "top top", end: "bottom 55%",
+    onUpdate: (st) => cambiarLado(st.progress > 0.32 && st.progress < 0.85 ? "izq" : "der"),
+  });
+  ScrollTrigger.create({
+    trigger: "#codigo", start: "top 45%", end: "bottom top",
+    onToggle: (st) => {
+      if (st.isActive === aterrizado) return;
+      aterrizado = st.isActive;
+      vueltas += 1;
+      gsap.to(giro, { rotation: 360 * vueltas, duration: 1.2, ease: "power3.out" });
+    },
+  });
+
+  let desdeX = xLado("der");
+  gsap.set(jr, { x: xLado("der"), y: window.innerHeight * 0.7 });
+  gsap.ticker.add(() => {
+    const w = jr.offsetWidth, h = jr.offsetHeight;
+    let x, y;
+    if (aterrizado) {
+      const r = terminal.getBoundingClientRect();
+      x = r.right - w * 0.62;
+      y = r.top - h * 0.62;
+    } else {
+      const meta = xLado(lado);
+      if (arco.p >= 1) desdeX = meta;
+      x = lerp(desdeX, meta, arco.p);
+      const base = window.innerWidth < 900 ? window.innerHeight - h - 18 : window.innerHeight * 0.36;
+      const ola = window.innerWidth < 900 ? 0 : Math.sin(window.scrollY / 520) * window.innerHeight * 0.12;
+      y = base + ola - Math.sin(Math.PI * arco.p) * 170;
+    }
+    irX(x);
+    irY(y);
+    // Se inclina según la velocidad del scroll; en móvil gira con el scroll
+    const vel = lenis ? lenis.velocity : 0;
+    inclinar(clamp(vel * 1.6, -28, 28) + (window.innerWidth < 900 ? window.scrollY * 0.08 : 0));
+    // En móvil aparece después del hero para no tapar sus cifras
+    const listo = performance.now() - inicio > 1600;
+    opacidad(listo && (window.innerWidth >= 900 || window.scrollY > window.innerHeight * 2.4) ? 1 : 0);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Títulos que entran palabra por palabra
+// ---------------------------------------------------------------------------
+function partirPalabras(el) {
+  for (const nodo of [...el.childNodes]) {
+    if (nodo.nodeType === Node.TEXT_NODE) {
+      const frag = document.createDocumentFragment();
+      nodo.textContent.split(/(\s+)/).forEach((trozo) => {
+        if (!trozo) return;
+        if (/^\s+$/.test(trozo)) { frag.appendChild(document.createTextNode(trozo)); return; }
+        const pal = document.createElement("span");
+        pal.className = "pal";
+        pal.innerHTML = `<span>${trozo}</span>`;
+        frag.appendChild(pal);
+      });
+      nodo.replaceWith(frag);
+    } else if (nodo.nodeType === Node.ELEMENT_NODE) {
+      partirPalabras(nodo);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Microinteracciones: tarjetas con inclinación 3D, botones magnéticos y la cinta
+// ---------------------------------------------------------------------------
+function microinteracciones() {
+  const fino = window.matchMedia("(pointer: fine)").matches;
+  if (fino) {
+    $$(".tarjeta-alt, .aporte-grid article, .tarjetas-aws article, .tramo, .video").forEach((el) => {
+      gsap.set(el, { transformPerspective: 900 });
+      const rx = gsap.quickTo(el, "rotationX", { duration: 0.5, ease: "power3" });
+      const ry = gsap.quickTo(el, "rotationY", { duration: 0.5, ease: "power3" });
+      el.addEventListener("pointermove", (e) => {
+        const r = el.getBoundingClientRect();
+        rx(((e.clientY - r.top) / r.height - 0.5) * -8);
+        ry(((e.clientX - r.left) / r.width - 0.5) * 8);
+      });
+      el.addEventListener("pointerleave", () => { rx(0); ry(0); });
+    });
+    $$(".btn").forEach((b) => {
+      const bx = gsap.quickTo(b, "x", { duration: 0.4, ease: "power3" });
+      const by = gsap.quickTo(b, "y", { duration: 0.4, ease: "power3" });
+      b.addEventListener("pointermove", (e) => {
+        const r = b.getBoundingClientRect();
+        bx((e.clientX - r.left - r.width / 2) * 0.22);
+        by((e.clientY - r.top - r.height / 2) * 0.3);
+      });
+      b.addEventListener("pointerleave", () => { bx(0); by(0); });
+    });
+  }
+  // Cinta: avanza sola y acelera con la velocidad del scroll
+  const cinta = gsap.to("#cinta-pista", { xPercent: -50, duration: 38, ease: "none", repeat: -1 });
+  ScrollTrigger.create({
+    trigger: ".cinta", start: "top bottom", end: "bottom top",
+    onUpdate: (st) => {
+      const v = st.getVelocity();
+      gsap.to(cinta, { timeScale: (v < 0 ? -1 : 1) * (1 + Math.min(4, Math.abs(v) / 400)), duration: 0.3, overwrite: true });
+    },
+  });
+}
+
+if (!reducido) {
+  satelite();
+  microinteracciones();
+  $$(".titulo-seccion h2, .cierre h2, .aporte-cabecera h2").forEach((h) => {
+    partirPalabras(h);
+    gsap.from(h.querySelectorAll(".pal > span"), {
+      yPercent: 110, rotation: 4, duration: 0.9, ease: "power4.out", stagger: 0.045,
+      scrollTrigger: { trigger: h, start: "top 88%" },
+    });
+  });
+}
+
 ScrollTrigger.refresh();
