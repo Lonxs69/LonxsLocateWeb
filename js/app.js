@@ -41,10 +41,12 @@ $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => {
   const destino = document.querySelector(a.getAttribute("href"));
   if (!destino) return;
   e.preventDefault();
-  if (lenis) lenis.scrollTo(destino, { offset: destino.id === "inicio" ? 0 : -64, duration: 1.6 });
+  const arriba = destino.id === "inicio";
+  if (lenis) lenis.scrollTo(destino, { offset: arriba ? 0 : -64, duration: arriba ? 2.4 : 1.6 });
   else destino.scrollIntoView();
 }));
 gsap.to("#barra-progreso", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.3 } });
+gsap.to("#arriba-avance", { strokeDashoffset: 0, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.3 } });
 
 // ---------------------------------------------------------------------------
 // Datos
@@ -602,6 +604,21 @@ function microinteracciones() {
     },
   });
 }
+
+// Marca gigante del footer: mide el texto y lo escala para que llene el ancho de la ventana
+const marca = $("#pie-gigante");
+function ajustarMarca() {
+  marca.style.fontSize = "100px";
+  const ancho = marca.getBoundingClientRect().width;
+  const meta = document.documentElement.clientWidth * 0.985;
+  marca.style.fontSize = `${(100 * meta) / ancho}px`;
+}
+document.fonts.ready.then(ajustarMarca);
+ajustarMarca();
+let anchoVentana = window.innerWidth;
+window.addEventListener("resize", () => {
+  if (window.innerWidth !== anchoVentana) { anchoVentana = window.innerWidth; ajustarMarca(); }
+});
 
 if (!reducido) {
   satelite();

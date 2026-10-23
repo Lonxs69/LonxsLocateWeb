@@ -374,7 +374,7 @@
     </section>
   </main>
 
-  <footer class="pie">
+  <footer class="pie" id="pie">
     <div class="contenedor">
       <div class="pie-grid">
         <div class="pie-marca">
@@ -410,18 +410,19 @@
       <div class="pie-legal">
         <p>© 2026 Junior De León · Licencia MIT</p>
         <p>Fronteras: Natural Earth · Relieve: AWS Terrain Tiles</p>
-        <a href="#inicio" class="arriba"><i data-lucide="arrow-up"></i>Volver arriba</a>
+        <a href="#inicio" class="arriba" aria-label="Volver arriba">
+          <span class="arriba-texto">Volver arriba</span>
+          <span class="arriba-anillo">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle class="arriba-fondo" cx="24" cy="24" r="21"/>
+              <circle class="arriba-avance" id="arriba-avance" cx="24" cy="24" r="21" pathLength="1"/>
+            </svg>
+            <i data-lucide="arrow-up"></i>
+          </span>
+        </a>
       </div>
     </div>
-    <svg class="pie-gigante" viewBox="0 0 1200 180" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-      <defs>
-        <linearGradient id="pie-degradado" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#e5352b" stop-opacity=".6"/>
-          <stop offset=".9" stop-color="#e5352b" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <text x="600" y="172" text-anchor="middle" textLength="1176" lengthAdjust="spacingAndGlyphs" fill="url(#pie-degradado)">LonxsLocate</text>
-    </svg>
+    <div class="pie-gigante" aria-hidden="true"><span id="pie-gigante">LonxsLocate</span></div>
   </footer>
 
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>

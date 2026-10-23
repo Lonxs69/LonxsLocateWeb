@@ -344,9 +344,26 @@ select { width: 100%; padding: 10px 12px; border-radius: 10px; background: var(-
 .pie-social { display: inline-flex !important; align-items: center; gap: 8px; }
 .pie-legal { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; padding: 22px 0; border-top: 1px solid var(--borde); color: var(--texto-3); font-size: 13px; }
 .pie-legal p { margin: 0; }
-.arriba { display: inline-flex; align-items: center; gap: 6px; color: var(--texto-2); }
-.pie-gigante { display: block; width: 100%; height: auto; margin-top: 8px; user-select: none; overflow: visible; }
-.pie-gigante text { font-family: var(--display); font-weight: 700; font-size: 200px; letter-spacing: -8px; }
+.arriba { display: inline-flex; align-items: center; gap: 14px; color: var(--texto-2); font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.arriba:hover { text-decoration: none; color: var(--texto); }
+.arriba-anillo { position: relative; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; transition: background .3s, transform .3s; }
+.arriba-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.arriba-fondo { fill: none; stroke: var(--borde-fuerte); stroke-width: 1.5; }
+.arriba-avance { fill: none; stroke: var(--rojo); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.arriba-anillo svg.lucide { position: relative; width: 20px; height: 20px; color: var(--texto); transform: none; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.arriba:hover .arriba-anillo { background: var(--rojo); transform: scale(1.06); }
+.arriba:hover .arriba-anillo svg.lucide { animation: subir .9s cubic-bezier(.2, .8, .2, 1) infinite; color: #fff; }
+.arriba:hover .arriba-avance { stroke: #fff; }
+@keyframes subir { 0% { transform: translateY(0); } 45% { transform: translateY(-14px); opacity: 0; } 46% { transform: translateY(14px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+/* Marca gigante: el JS ajusta el tamaño para que ocupe todo el ancho de la pantalla */
+.pie-gigante { width: 100%; overflow: hidden; text-align: center; line-height: 0.82; margin-top: 8px; user-select: none; }
+.pie-gigante span {
+  display: inline-block; white-space: nowrap; padding: 0 0.05em 0.04em;
+  font: 700 160px/0.82 var(--display); letter-spacing: -0.045em;
+  background: linear-gradient(180deg, rgba(229, 53, 43, .62) 0%, rgba(229, 53, 43, .18) 62%, rgba(229, 53, 43, 0) 96%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
 .noscript { padding: 16px; text-align: center; color: var(--texto-2); }
 
 /* Satélite Jr: acompaña el scroll */
