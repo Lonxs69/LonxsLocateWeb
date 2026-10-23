@@ -1,4 +1,4 @@
 .DS_Store
 .vercel
 __pycache__/
-barrido.json
+/barrido.json
