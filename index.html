@@ -42,6 +42,39 @@
     <a class="btn btn-sm btn-fantasma" href="https://github.com/Lonxs69/LonxsLocate" target="_blank" rel="noopener"><i data-lucide="github"></i>GitHub</a>
   </header>
 
+  <div class="jr" id="jr" aria-hidden="true">
+    <div class="jr-flota"><div class="jr-incl"><div class="jr-giro">
+      <svg viewBox="0 0 220 128" role="presentation">
+        <defs>
+          <linearGradient id="jr-panel" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#3a1418"/><stop offset="1" stop-color="#1a0b0e"/>
+          </linearGradient>
+        </defs>
+        <g class="jr-ondas" fill="none" stroke="#ff6b5a" stroke-linecap="round">
+          <path class="jr-onda o1" d="M100 16 Q110 8 120 16"/>
+          <path class="jr-onda o2" d="M94 11 Q110 -1 126 11"/>
+        </g>
+        <line x1="110" y1="44" x2="110" y2="24" stroke="#c9bcc1" stroke-width="2"/>
+        <path d="M100 30 Q110 40 120 30" fill="none" stroke="#c9bcc1" stroke-width="2"/>
+        <circle class="jr-luz" cx="110" cy="22" r="3.4" fill="#ff6b5a"/>
+        <line x1="78" y1="70" x2="92" y2="70" stroke="#8e7f86" stroke-width="3"/>
+        <line x1="128" y1="70" x2="142" y2="70" stroke="#8e7f86" stroke-width="3"/>
+        <g class="jr-panel izq">
+          <rect x="6" y="46" width="72" height="48" rx="4" fill="url(#jr-panel)" stroke="#ff6b5a" stroke-width="1.6"/>
+          <path d="M24 46 V94 M42 46 V94 M60 46 V94 M6 70 H78" stroke="#ff6b5a" stroke-opacity=".45" stroke-width="1"/>
+        </g>
+        <g class="jr-panel der">
+          <rect x="142" y="46" width="72" height="48" rx="4" fill="url(#jr-panel)" stroke="#ff6b5a" stroke-width="1.6"/>
+          <path d="M160 46 V94 M178 46 V94 M196 46 V94 M142 70 H214" stroke="#ff6b5a" stroke-opacity=".45" stroke-width="1"/>
+        </g>
+        <rect x="90" y="42" width="40" height="56" rx="9" fill="#1c1418" stroke="#ff6b5a" stroke-width="2"/>
+        <rect x="95" y="47" width="30" height="46" rx="6" fill="none" stroke="#ff6b5a" stroke-opacity=".25"/>
+        <text x="110" y="77" text-anchor="middle" class="jr-texto">Jr</text>
+        <rect x="102" y="98" width="16" height="8" rx="2" fill="#2f252b"/>
+      </svg>
+    </div></div></div>
+  </div>
+
   <div class="escenario" id="escenario" aria-hidden="true">
     <canvas id="canvas-principal"></canvas>
     <div class="etiquetas" id="etiquetas"></div>
@@ -113,6 +146,8 @@
         </div>
       </div>
     </section>
+
+    <div class="cinta" aria-hidden="true"><div class="cinta-pista" id="cinta-pista"><span><i data-lucide="orbit"></i>LEO a 629 km</span><span><i data-lucide="timer"></i>Una vuelta cada 97 min</span><span><i data-lucide="radio-tower"></i>15 estaciones terrenas</span><span><i data-lucide="satellite"></i>64 satélites bastan</span><span><i data-lucide="gauge"></i>4 ms vs. 241 ms por GEO</span><span><i data-lucide="map-pin"></i>7 comunidades rurales</span><span><i data-lucide="chart-scatter"></i>90 diseños evaluados</span><span><i data-lucide="orbit"></i>LEO a 629 km</span><span><i data-lucide="timer"></i>Una vuelta cada 97 min</span><span><i data-lucide="radio-tower"></i>15 estaciones terrenas</span><span><i data-lucide="satellite"></i>64 satélites bastan</span><span><i data-lucide="gauge"></i>4 ms vs. 241 ms por GEO</span><span><i data-lucide="map-pin"></i>7 comunidades rurales</span><span><i data-lucide="chart-scatter"></i>90 diseños evaluados</span></div></div>
 
     <!-- RESULTADOS -->
     <section class="seccion alterna" id="resultados">
@@ -378,7 +413,15 @@
         <a href="#inicio" class="arriba"><i data-lucide="arrow-up"></i>Volver arriba</a>
       </div>
     </div>
-    <div class="pie-gigante" aria-hidden="true">LonxsLocate</div>
+    <svg class="pie-gigante" viewBox="0 0 1200 180" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="pie-degradado" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e5352b" stop-opacity=".6"/>
+          <stop offset=".9" stop-color="#e5352b" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <text x="600" y="172" text-anchor="middle" textLength="1176" lengthAdjust="spacingAndGlyphs" fill="url(#pie-degradado)">LonxsLocate</text>
+    </svg>
   </footer>
 
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
